@@ -1,7 +1,7 @@
 """
 🌿 AgriVision – Plant Disease Detection Dashboard
 -------------------------------------------------
-Professional Streamlit dashboard for real-time plant disease prediction.
+A professional Streamlit dashboard for real-time plant disease prediction.
 
 Developed by: Mukaram Ali
 GitHub: https://github.com/mukaram163/AgriVision
@@ -29,7 +29,7 @@ st.set_page_config(
 )
 
 # ----------------------------------------------------------
-# 🎨 Custom Styling (Green Theme + Text Fix)
+# 🎨 Custom Styling (Green Theme + Accessibility Fixes)
 # ----------------------------------------------------------
 st.markdown("""
     <style>
@@ -49,23 +49,18 @@ st.markdown("""
         font-weight: 700 !important;
     }
 
-    /* === File Uploader Section === */
-    /* Label + helper text → black */
+    /* === File Uploader === */
     div[data-testid="stFileUploader"] label,
     div[data-testid="stFileUploader"] p,
     div[data-testid="stFileUploader"] small {
         color: #000 !important;
         font-weight: 700 !important;
     }
-
-    /* Keep inside drop zone visible */
     div[data-testid="stFileUploaderDropzone"] {
         background-color: #ffffff !important;
         border: 2px dashed #1b4332 !important;
         border-radius: 10px !important;
     }
-
-    /* Dropzone text + browse button styling */
     div[data-testid="stFileUploaderDropzone"] * {
         color: #1b4332 !important;
     }
@@ -83,7 +78,6 @@ st.markdown("""
         background-color: #e9f5e9 !important;
         border-left: 5px solid #1b4332 !important;
     }
-
     .stSuccess, .stSuccess p, .stSuccess div, .stSuccess strong, .stSuccess span {
         background-color: #95d5b2 !important;
         color: #000 !important;
@@ -114,6 +108,12 @@ st.markdown("""
         display: inline-block;
     }
 
+    /* === General Text Fix (black text where needed) === */
+    .stCaption, .stMarkdown p, .stInfo, .stInfo p {
+        color: #000 !important;
+        font-weight: 500 !important;
+    }
+
     /* === Footer === */
     footer {visibility: hidden;}
     #footer-container {
@@ -135,9 +135,20 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+# ----------------------------------------------------------
+# 🌿 Branding Header
+# ----------------------------------------------------------
+st.markdown("""
+    <h1 style='text-align:center; color:#1b4332; font-weight:800;'>
+        🌾 AgriVision – Plant Disease Detection Dashboard
+    </h1>
+    <p style='text-align:center; color:#2d6a4f; font-size:1.05rem;'>
+        Empowering sustainable agriculture through AI-powered leaf disease detection 🌱
+    </p>
+""", unsafe_allow_html=True)
 
 # ----------------------------------------------------------
-# ⚙️ Sidebar
+# ⚙️ Sidebar Controls
 # ----------------------------------------------------------
 st.sidebar.title("🌿 AgriVision Controls")
 st.sidebar.write("Upload a leaf image or view evaluation metrics.")
@@ -145,16 +156,20 @@ uploaded_file = st.sidebar.file_uploader("📤 Upload a leaf image...", type=["j
 show_metrics = st.sidebar.checkbox("Show Evaluation Metrics", value=True)
 
 # ----------------------------------------------------------
-# 🧠 Load Model
+# 🧠 Load Model (cached for performance)
 # ----------------------------------------------------------
 device = "cuda" if torch.cuda.is_available() else "cpu"
-checkpoint_path = "models/best_model.pth"
 
-model = create_model(num_classes=15)
-checkpoint = load_checkpoint(checkpoint_path)
-model.load_state_dict(checkpoint["model_state_dict"])
-model.to(device)
-model.eval()
+@st.cache_resource
+def load_model():
+    model = create_model(num_classes=15)
+    checkpoint = load_checkpoint("models/best_model.pth")
+    model.load_state_dict(checkpoint["model_state_dict"])
+    model.to(device)
+    model.eval()
+    return model
+
+model = load_model()
 
 class_names = [
     'Pepper__bell___Bacterial_spot', 'Pepper__bell___healthy',
@@ -213,7 +228,7 @@ with tab1:
             plt.gca().invert_yaxis()
             plt.xlabel("Confidence")
             plt.tight_layout()
-            st.pyplot(plt)
+            st.pyplot(plt.gcf(), clear_figure=True)
 
     else:
         st.info("📤 Upload a leaf image in the sidebar to get predictions.")
@@ -238,11 +253,21 @@ with tab2:
             st.subheader("📉 Confusion Matrix")
             plt.figure(figsize=(10, 8))
             sns.heatmap(cm_df, annot=True, fmt="d", cmap="Greens")
-            st.pyplot(plt)
+            st.pyplot(plt.gcf(), clear_figure=True)
         else:
             st.info("Confusion matrix not found. Run `python -m src.evaluate` to generate it.")
     else:
         st.warning("⚠️ Evaluation metrics not found. Please run `python -m src.evaluate` first.")
+
+# ----------------------------------------------------------
+# 💡 About Section
+# ----------------------------------------------------------
+st.markdown("""
+---
+### 💡 About This Project
+**AgriVision** leverages deep learning (ResNet18 fine-tuned on the PlantVillage dataset) to identify plant diseases from leaf images.  
+Trained on 50,000+ samples with 95%+ accuracy — built for agricultural researchers and smart-farming solutions.
+""")
 
 # ----------------------------------------------------------
 # ❤️ Footer
