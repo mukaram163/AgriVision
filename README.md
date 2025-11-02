@@ -1,4 +1,5 @@
 # AgriVision – Automated Plant Phenotyping with Deep Learning
+![CI](https://github.com/mukaram163/AgriVision/actions/workflows/ci.yml/badge.svg)
 
 ## Problem Statement
 Agricultural scientists spend extensive time manually inspecting plant images to identify diseases and measure traits. AgriVision automates this process using deep learning to detect leaf diseases and extract phenotypic traits, reducing manual workload and improving accuracy.
