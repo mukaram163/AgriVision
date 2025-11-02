@@ -20,7 +20,12 @@ from src.preprocessing import create_dataloaders
 # ----------------------------------------------------------
 # 🧠 Function: Train and Validate
 # ----------------------------------------------------------
-def train_model(num_epochs=5, batch_size=32, learning_rate=0.001, img_size=224, device=None):
+def train_model(
+        num_epochs=5,
+        batch_size=32,
+        learning_rate=0.001,
+        img_size=224,
+        device=None):
     """
     Full training loop for the AgriVision model.
 
@@ -38,7 +43,9 @@ def train_model(num_epochs=5, batch_size=32, learning_rate=0.001, img_size=224, 
 
     # 2️⃣ Create DataLoaders
     data_dir = os.path.join("data", "processed")
-    train_loader, val_loader, _, class_names = create_dataloaders(data_dir, batch_size, img_size)
+    train_loader, val_loader, _, class_names = create_dataloaders(
+        data_dir, batch_size, img_size
+    )
     num_classes = len(class_names)
 
     # 3️⃣ Create Model
@@ -61,7 +68,9 @@ def train_model(num_epochs=5, batch_size=32, learning_rate=0.001, img_size=224, 
         correct = 0
         total = 0
 
-        for images, labels in tqdm(train_loader, desc=f"Epoch {epoch+1}/{num_epochs} [Training]"):
+        for images, labels in tqdm(
+            train_loader, desc=f"Epoch {epoch+1}/{num_epochs} [Training]"
+        ):
             images, labels = images.to(device), labels.to(device)
 
             optimizer.zero_grad()
@@ -85,7 +94,9 @@ def train_model(num_epochs=5, batch_size=32, learning_rate=0.001, img_size=224, 
         total_val = 0
 
         with torch.no_grad():
-            for images, labels in tqdm(val_loader, desc=f"Epoch {epoch+1}/{num_epochs} [Validation]"):
+            for images, labels in tqdm(
+                val_loader, desc=f"Epoch {epoch+1}/{num_epochs} [Validation]"
+            ):
                 images, labels = images.to(device), labels.to(device)
                 outputs = model(images)
                 loss = criterion(outputs, labels)
@@ -104,7 +115,13 @@ def train_model(num_epochs=5, batch_size=32, learning_rate=0.001, img_size=224, 
         # 8️⃣ Save checkpoint if model improved
         if val_acc > best_val_acc:
             best_val_acc = val_acc
-            save_checkpoint(model, optimizer, epoch, val_acc, filepath="models/best_model.pth")
+            save_checkpoint(
+                model,
+                optimizer,
+                epoch,
+                val_acc,
+                filepath="models/best_model.pth"
+            )
 
     print(f"✅ Training complete. Best Val Acc: {best_val_acc:.4f}")
 

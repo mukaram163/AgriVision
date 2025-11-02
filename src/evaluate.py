@@ -14,7 +14,6 @@ from torchvision import transforms, datasets
 from sklearn.metrics import classification_report, confusion_matrix
 import matplotlib.pyplot as plt
 import seaborn as sns
-import numpy as np
 import pandas as pd
 from tqdm import tqdm
 
@@ -37,7 +36,8 @@ def load_test_data(data_dir="data/processed", img_size=224, batch_size=32):
 
     test_dir = os.path.join(data_dir, "test")
     test_dataset = datasets.ImageFolder(test_dir, transform=test_transform)
-    test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
+    test_loader = torch.utils.data.DataLoader(
+        test_dataset, batch_size=batch_size, shuffle=False)
 
     return test_loader, test_dataset.classes
 
@@ -84,14 +84,33 @@ def evaluate_model(model, test_loader, class_names, device, save_csv=True):
     print(f"\n✅ Test Accuracy: {accuracy:.4f}")
     print(f"📉 Test Loss: {avg_loss:.4f}")
     print("\n📋 Classification Report:")
-    report = classification_report(all_labels, all_preds, target_names=class_names, output_dict=True)
-    print(classification_report(all_labels, all_preds, target_names=class_names))
+
+    report = classification_report(
+        all_labels,
+        all_preds,
+        target_names=class_names,
+        output_dict=True
+    )
+
+    print(
+        classification_report(
+            all_labels,
+            all_preds,
+            target_names=class_names
+        )
+    )
 
     # Confusion Matrix
     cm = confusion_matrix(all_labels, all_preds)
     plt.figure(figsize=(12, 10))
-    sns.heatmap(cm, annot=False, fmt='d', cmap='Blues',
-                xticklabels=class_names, yticklabels=class_names)
+    sns.heatmap(
+        cm,
+        annot=False,
+        fmt='d',
+        cmap='Blues',
+        xticklabels=class_names,
+        yticklabels=class_names
+    )
     plt.title("Confusion Matrix")
     plt.xlabel("Predicted")
     plt.ylabel("Actual")
@@ -107,6 +126,7 @@ def evaluate_model(model, test_loader, class_names, device, save_csv=True):
         csv_path = os.path.join("results", "eval_metrics.csv")
         df.to_csv(csv_path, index=True)
         print(f"📁 Metrics saved to: {csv_path}")
+
 
 # ----------------------------------------------------------
 # 🔍 Inference on Single Image
@@ -160,4 +180,9 @@ if __name__ == "__main__":
     evaluate_model(model, test_loader, class_names, device)
 
     # Example inference (replace with your own test image)
-    # predict_image(model, "data/raw/PlantVillage/Tomato___Late_blight/0a1b2c.jpg", class_names, device)
+    # predict_image(
+    #     model,
+    #     "data/raw/PlantVillage/Tomato___Late_blight/0a1b2c.jpg",
+    #     class_names,
+    #     device
+    # )

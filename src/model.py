@@ -30,7 +30,8 @@ def create_model(num_classes, pretrained=True):
     """
 
     # Load pretrained ResNet18 from torchvision
-    model = models.resnet18(weights=models.ResNet18_Weights.DEFAULT if pretrained else None)
+    model = models.resnet18(
+        weights=models.ResNet18_Weights.DEFAULT if pretrained else None)
 
     # Get the number of input features to the final fully-connected layer
     in_features = model.fc.in_features
@@ -49,7 +50,8 @@ def create_model(num_classes, pretrained=True):
 # ----------------------------------------------------------
 # 💾 Function: Save and Load Model Checkpoints
 # ----------------------------------------------------------
-def save_checkpoint(model, optimizer, epoch, val_acc, filepath="models/best_model.pth"):
+def save_checkpoint(model, optimizer, epoch, val_acc,
+                    filepath="models/best_model.pth"):
     """
     Saves model and optimizer states to a checkpoint file.
 
