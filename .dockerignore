@@ -1,0 +1,34 @@
+# Ignore Python cache & build files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+
+# Ignore virtual environments
+.env
+.venv/
+env/
+venv/
+
+# Ignore system files
+.DS_Store
+.vscode/
+
+# Ignore datasets & large folders
+data/
+results/
+
+# Keep models inside image
+# models/*.pth
+
+# Ignore notebooks (optional)
+notebooks/
+
+# Git & CI/CD
+.git/
+.github/
+.gitignore
+
+# OS-specific
+Thumbs.db

@@ -1,0 +1,21 @@
+# Core
+streamlit==1.39.0
+pandas==2.2.2
+numpy==1.26.4
+
+# Visualization
+matplotlib==3.9.0
+seaborn==0.13.2
+
+# Image processing
+Pillow==10.4.0
+opencv-python==4.10.0.84
+
+# Utils
+scikit-learn==1.5.1
+
+# Optional (if you use PySpark)
+pyspark==3.5.1
+
+# Deployment & Linting
+flake8==7.3.0
