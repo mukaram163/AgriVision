@@ -1,8 +1,25 @@
-# Ignore data and model weights
+# === Data and model files ===
+# Ignore local data, but keep model folder (so best_model.pth is tracked via Git LFS)
 data/
-models/
 results/*.pth
 
-# Python / Jupyter cache
+# Keep models folder but ignore temporary or training checkpoints
+models/*.tmp
+models/*.bak
+models/__pycache__/
+
+# === Python / Jupyter cache ===
 __pycache__/
+*.pyc
+*.pyo
+*.pyd
+.ipynb_checkpoints/
 *.ipynb_checkpoints/
+.DS_Store
+
+# === Virtual environments / OS files ===
+env/
+venv/
+*.env
+*.log
+*.swp
