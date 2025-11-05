@@ -19,3 +19,7 @@ pyspark==3.5.1
 
 # Deployment & Linting
 flake8==7.3.0
+
+fastapi==0.115.0
+uvicorn==0.30.0
+python-multipart==0.0.9
