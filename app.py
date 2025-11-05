@@ -18,6 +18,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import os
 from src.model import create_model, load_checkpoint
+from src.database import init_db, insert_prediction, get_all_predictions  # ✅ NEW IMPORT
 
 # ----------------------------------------------------------
 # 🌱 Page Setup
@@ -171,6 +172,9 @@ def load_model():
 
 model = load_model()
 
+# ✅ Initialize database
+init_db()
+
 class_names = [
     'Pepper__bell___Bacterial_spot', 'Pepper__bell___healthy',
     'Potato___Early_blight', 'Potato___Late_blight', 'Potato___healthy',
@@ -184,7 +188,7 @@ class_names = [
 # ----------------------------------------------------------
 # 📊 Tabs
 # ----------------------------------------------------------
-tab1, tab2 = st.tabs(["🧠 Inference", "📈 Evaluation Metrics"])
+tab1, tab2, tab3 = st.tabs(["🧠 Inference", "📈 Evaluation Metrics", "📜 History"])  # ✅ Added History Tab
 
 # ----------------------------------------------------------
 # 🧩 Inference Tab
@@ -219,6 +223,9 @@ with tab1:
         with col2:
             st.subheader("🔍 Prediction Result")
             st.success(f"🌱 {predicted_class} ({confidence*100:.2f}% confidence)")
+
+            # ✅ Save to database
+            insert_prediction(uploaded_file.name, predicted_class, float(confidence))
 
             # Confidence Bar Chart
             st.subheader("Confidence Breakdown (Top 5)")
@@ -258,6 +265,17 @@ with tab2:
             st.info("Confusion matrix not found. Run `python -m src.evaluate` to generate it.")
     else:
         st.warning("⚠️ Evaluation metrics not found. Please run `python -m src.evaluate` first.")
+
+# ----------------------------------------------------------
+# 📜 History Tab (Database)
+# ----------------------------------------------------------
+with tab3:
+    st.header("📜 Prediction History")
+    df_history = get_all_predictions()
+    if df_history.empty:
+        st.info("No predictions logged yet. Run an inference to see results here.")
+    else:
+        st.dataframe(df_history, use_container_width=True)
 
 # ----------------------------------------------------------
 # 💡 About Section
